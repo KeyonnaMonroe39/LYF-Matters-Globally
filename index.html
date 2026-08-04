@@ -701,7 +701,8 @@ function heartPath(g,x,y,s,a,col){
   g.shadowBlur=6*s;g.shadowColor=col;g.fill();g.restore();
 }
 
-if(!reduce&&fine){
+// ALWAYS enable hearts on fine pointers (mouse/trackpad), ignore reduced-motion
+if(fine){
   var last=0,lx=null,ly=null;
   addEventListener('pointermove',function(e){
     tpx=(e.clientX/innerWidth-.5)*2;tpy=(e.clientY/innerHeight-.5)*2;
@@ -747,7 +748,7 @@ function sky(){
 sky();
 
 /* ===== ORBITAL GLOBE : home (large) · kids (medium) · store (ambient) ===== */
-var ODPR=Math.min(devicePixelRatio||1,2), pts=[], moons=[], spin=0, active=null, actx=null;
+var ODPR=Math.min(devicePixelRatio||1,2), pts=[],moons=[],spin=0,active=null,actx=null;
 var GLOBES={
   home :{el:document.getElementById('orbit-home'), density:1,   moonAlpha:1,   glow:1},
   kids :{el:document.getElementById('orbit-kids'), density:.72, moonAlpha:1,   glow:1.1},
@@ -858,10 +859,13 @@ function show(name){
   if(location.hash.slice(1)!==name)history.replaceState(null,'','#'+name);
   loadImgs();
 }
+
 tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.v);});});
+
 document.querySelectorAll('[data-go]').forEach(function(b){
   b.addEventListener('click',function(e){e.preventDefault();show(b.dataset.go);});
 });
+
 addEventListener('keydown',function(e){
   if(e.target.closest('input,textarea'))return;
   var i=tabs.findIndex(function(t){return t.getAttribute('aria-selected')==='true';});
